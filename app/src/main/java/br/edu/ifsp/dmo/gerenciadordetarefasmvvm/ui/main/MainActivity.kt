@@ -12,6 +12,9 @@ package br.edu.ifsp.dmo.gerenciadordetarefasmvvm.ui.main
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -25,7 +28,7 @@ import br.edu.ifsp.dmo.gerenciadordetarefasmvvm.ui.listener.TaskClickListener
 class MainActivity : AppCompatActivity(), TaskClickListener {
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
-    private lateinit var adapter: TaskAdapter
+    private lateinit var taskAdapter: TaskAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +38,9 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         configListview()
+        configSpinner()
         configOnClickListener()
         configObservers()
-
     }
 
     override fun clickDone(position: Int) {
@@ -45,13 +48,13 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
     }
 
     private fun configListview() {
-        adapter = TaskAdapter(this, mutableListOf(), this)
-        binding.listTasks.adapter = adapter
+        taskAdapter = TaskAdapter(this, mutableListOf(), this)
+        binding.listTasks.adapter = taskAdapter
     }
 
     private fun configObservers() {
         viewModel.tasks.observe(this, Observer {
-            adapter.updateTasks(it)
+            taskAdapter.updateTasks(it)
         })
 
         viewModel.insertTask.observe(this, Observer {
@@ -102,5 +105,26 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
 
         val dialog = builder.create()
         dialog.show()
+    }
+
+    private fun configSpinner() {
+        val filters = listOf(
+            getString(R.string.filter_all),
+            getString(R.string.filter_completed),
+            getString(R.string.filter_not_completed)
+        )
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, filters)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spinnerFilter.adapter = adapter
+
+        binding.spinnerFilter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parentView: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                viewModel.updateFilter(position)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+        }
     }
 }

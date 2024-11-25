@@ -8,4 +8,8 @@
     <string name="task_inserted_error">Erro ao inserir tarefa.</string>
     <string name="task_inserted_success">Tarefa inserida com sucesso</string>
     <string name="task_updated_success">"Tarefa atualizada "</string>
+    <string name="filter">Filtrar:</string>
+    <string name="filter_all">Todas</string>
+    <string name="filter_completed">Concluídas</string>
+    <string name="filter_not_completed">Não concluídas</string>
 </resources>
