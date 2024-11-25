@@ -44,7 +44,10 @@ class MainActivity : AppCompatActivity(), TaskClickListener {
     }
 
     override fun clickDone(position: Int) {
-        viewModel.updateTask(position)
+        val task = taskAdapter.getItem(position)
+        if(task != null) {
+            viewModel.updateTask(task.id)
+        }
     }
 
     private fun configListview() {

@@ -39,11 +39,14 @@ class MainViewModel : ViewModel() {
         load()
     }
 
-    fun updateTask(position: Int) {
-        val task = dao.getAll()[position]
-        task.isCompleted = !task.isCompleted
-        _updateTask.value = true
-        load()
+    fun updateTask(position: Long) {
+        val task = dao.get(position)
+        if(task != null) {
+            task.isCompleted = !task.isCompleted
+            _updateTask.value = true
+            load()
+        }
+
     }
 
     fun updateFilter(newFilter: Int) {
@@ -58,7 +61,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun load() {
-        val filteredTasks = applyFilter()
+        val filteredTasks = applyFilter().sortedBy { it.isCompleted }
         _tasks.value = filteredTasks
     }
 
